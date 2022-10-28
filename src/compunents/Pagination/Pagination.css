@@ -1,0 +1,13 @@
+.home {
+    margin: 30px 20px;
+  }
+  
+  .home h1,
+  .home h3 {
+    text-align: center;
+    margin: 20px 0;
+  }
+  
+  .home p {
+    margin: 20px 0;
+  }
