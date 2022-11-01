@@ -1,17 +1,35 @@
 import { React, useState, useEffect } from "react";
 import useFetch from "../../hooks/useFetch";
-import { Link } from "react-router-dom";
+import { Link, Route, Routes, useNavigate  } from "react-router-dom";
 import Loading from "../../compunents/loader/Loader";
 import Pagination from "../../compunents/Pagination/Pagination";
+import Button from "../../compunents/button/button"
+
+
 function User() {
-  const { data, loading } = useFetch("https://randomuser.me/api/?results=10");
-  console.log(data);
+  const { data, loading, error } = useFetch();
 
-  const users = data;
-
+  // const users = data;
 
 
 
+  const [currentPage, setCurrentPage] = useState(1);
+  const [usersPerPage] = useState(10);
+  // const [ Pages ] = useState (Math.round(data.length/usersPerPage))
+  const indexOfLastUser = currentPage * usersPerPage; 
+  const indexOfFirstUser = indexOfLastUser - usersPerPage; 
+  // const currentUser = data.slice(indexOfFirstUser, indexOfLastUser); 
+
+  const paginated = (data) => {
+    setCurrentPage(data);
+  };
+  const nextPage = () => {
+    // if (currentPage === currentUser) return null;
+    return setCurrentPage((prev) => prev + 1);
+  };
+  const prevPage = () => {
+    setCurrentPage((prev) => prev - 1);
+  };
 
 
 
@@ -19,10 +37,15 @@ function User() {
   // const [currentPage, setCurrentPage] = useState(1);
   // const [dataPerPage] = useState(12);
 
+  // // to redirect page
+  // const redirectPage = useNavigate();
+
+  
+
   // // Get current Data
   // const indexOfLastData = currentPage * dataPerPage;
   // const indexOfFirstData = indexOfLastData - dataPerPage;
-  // const currentData = users.slice(indexOfFirstData, indexOfLastData);
+  // // const currentData = users.slice(indexOfFirstData, indexOfLastData);
 
   // // change page
   // const paginate = (number) => {
@@ -45,6 +68,11 @@ function User() {
   //   }
   // };
 
+  if (!loading && error) {
+    return (
+      <h1>Error</h1>
+    );
+  }
   if (loading) {
     return <Loading />;
   }
@@ -56,7 +84,7 @@ function User() {
         <Link to={-1} className="btn" style={{ marginBottom: "50px" }}>
           Back
         </Link>
-        {data.map((item, index) => {
+        {data .map((item, index) => {
           return (
             <div key={index} className="profile">
               <img src={item.picture.medium} className="profileImg" alt="" />
@@ -68,7 +96,7 @@ function User() {
                 </div>
                 <div className="userdata">
                   <p className="email">{item.email}</p>
-                  <Link className="btn" to={`/user/${item.id.value}`}>
+                  <Link className="btn" to={`/user/${item.login.uuid}`}>
                     view Profile
                   </Link>
                   
@@ -80,31 +108,23 @@ function User() {
           );
         })}
 
-        {/* <ul className="pageNumbers">
-        <li>
-          <button
-            onClick={handlePrevbtn}
-            disabled={currentPage == pages[0] ? true : false}
-          >
-            Prev
-          </button>
-        </li>
-        {pageDecrementBtn}
-        {renderPageNumbers}
-        {pageIncrementBtn}
 
-        <li>
-          <button
-            onClick={handleNextbtn}
-            disabled={currentPage == pages[pages.length - 1] ? true : false}
-          >
-            Next
-          </button>
-        </li>
-      </ul>
-      <button onClick={handleLoadMore} className="loadmore">
-        Load More
-      </button> */}
+              {/* <div style={{ display: "flex", gap: "1rem" }}>
+                {" "}
+                <Button onClick={() => nextPage()}>Prev</Button>
+                <Pagination
+                  usersPerPage={usersPerPage}
+                  pageNumber={paginated}
+                  paginated={paginated}
+                  data={currentUser}
+                  totalUsers={data.length}
+                />
+                <Button onClick={() => prevPage()}>Next</Button>
+              </div> */}
+          
+
+
+        
       </div>
     </div>
   );
